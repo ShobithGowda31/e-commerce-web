@@ -1,5 +1,4 @@
 pipeline {
-
     agent any
 
     tools {
@@ -12,13 +11,6 @@ pipeline {
     }
 
     stages {
-
-        stage('Checkout') {
-            steps {
-                git branch: 'main',
-                url: 'https://github.com/<your-github-username>/e-commerce-web.git'
-            }
-        }
 
         stage('Build') {
             steps {
@@ -36,10 +28,7 @@ pipeline {
             steps {
                 sh '''
                 docker rm -f $CONTAINER_NAME || true
-                docker run -d \
-                --name $CONTAINER_NAME \
-                -p 8085:8080 \
-                $IMAGE_NAME
+                docker run -d --name $CONTAINER_NAME -p 8085:8080 $IMAGE_NAME
                 '''
             }
         }
@@ -50,19 +39,14 @@ pipeline {
                 sh 'curl http://localhost:8085'
             }
         }
-
     }
 
     post {
-
         success {
             echo 'Deployment Successful'
         }
-
         failure {
             echo 'Deployment Failed'
         }
-
     }
-
 }
